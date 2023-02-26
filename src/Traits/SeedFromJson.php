@@ -1,6 +1,6 @@
 <?php
 
-namespace SergeyBruhin\SeedFromJson\Providers;
+namespace SergeyBruhin\SeedFromJson\Traits;
 
 use Exception;
 use Illuminate\Database\Eloquent\Model;
