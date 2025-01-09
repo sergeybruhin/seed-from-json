@@ -4,6 +4,7 @@ namespace SergeyBruhin\SeedFromJson\Traits;
 
 use Exception;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use ReflectionClass;
@@ -12,13 +13,21 @@ trait SeedFromJson
 {
     /**
      * @param string $relativePath
+     * @param string|null $fileName
+     * @param string|null $baseDirectory
      * @return array
      */
-    private function readFromJson(string $relativePath): array
+    private function readFromJson(string $relativePath, ?string $fileName = 'data.json', ?string $baseDirectory = null): array
     {
+        $baseDirectory = $baseDirectory ?? database_path('data');
+
+        $filePath = $fileName ? ($baseDirectory . '/' . $relativePath . '/' . $fileName) : $baseDirectory . '/' . $relativePath;
+
         $entries = [];
+
+
         try {
-            $json = File::get(database_path('data/' . $relativePath));
+            $json = File::get($filePath);
         } catch (Exception $exception) {
             $this->command->error($exception->getMessage());
         }
@@ -27,6 +36,11 @@ trait SeedFromJson
             $entries = json_decode($json, true);
         }
         return $entries;
+    }
+
+    private function collectFromJson(string $relativePath): Collection
+    {
+        return collect($this->readFromJson($relativePath));
     }
 
     private function logModel(Model $model, string $entryName = null): void
