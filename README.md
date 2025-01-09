@@ -13,7 +13,48 @@ You can install the package via composer:
 composer require sergeybruhin/seed-from-json
 ```
 
-### ☝️ If you have robots.txt in public folder don't forget to delete it!
+## Usage Example
+
+```php
+
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Feature;
+use Illuminate\Database\Seeder;
+use SergeyBruhin\SeedFromJson\Traits\SeedFromJson;
+
+class FeaturesSeeder extends Seeder
+{
+    use SeedFromJson;
+
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        /**
+        * Default base directory database_path('data');
+        * Default file name "data.json"
+        * 'features' here is relative path to /database/data/features/data.json 
+        */
+        $this
+            ->collectFromJson('features')
+            ->each(function (array $entry) {
+                $feature = Feature::where('name', $entry['name'])
+                    ->first() ?? new Feature();
+
+                $feature->name = $entry['name'];
+                $feature->save();
+
+                $this->logModel($feature);
+            });
+    }
+}
+
+
+```
 
 ### Testing (Not yet 💁‍♂️)
 
