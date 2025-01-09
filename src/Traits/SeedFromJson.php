@@ -38,9 +38,9 @@ trait SeedFromJson
         return $entries;
     }
 
-    private function collectFromJson(string $relativePath): Collection
+    private function collectFromJson(string $relativePath, ?string $fileName = 'data.json', ?string $baseDirectory = null): Collection
     {
-        return collect($this->readFromJson($relativePath));
+        return collect($this->readFromJson($relativePath, $fileName, $baseDirectory));
     }
 
     private function logModel(Model $model, string $entryName = null): void
