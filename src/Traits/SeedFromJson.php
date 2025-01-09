@@ -17,8 +17,17 @@ trait SeedFromJson
      * @param string|null $baseDirectory
      * @return array
      */
-    private function readFromJson(string $relativePath, ?string $fileName = 'data.json', ?string $baseDirectory = null): array
+    private function readFromJson(string $relativePath, ?string $fileName = null, ?string $baseDirectory = null): array
     {
+        $defaultFileName = 'data.json';
+        $info = pathinfo($relativePath);
+
+        if (!empty($info["extension"])) {
+            $fileName = null;
+        } else {
+            $fileName = $fileName ?? $defaultFileName;
+        }
+
         $baseDirectory = $baseDirectory ?? database_path('data');
 
         $filePath = $fileName ? ($baseDirectory . '/' . $relativePath . '/' . $fileName) : $baseDirectory . '/' . $relativePath;
@@ -38,7 +47,7 @@ trait SeedFromJson
         return $entries;
     }
 
-    private function collectFromJson(string $relativePath, ?string $fileName = 'data.json', ?string $baseDirectory = null): Collection
+    private function collectFromJson(string $relativePath, string $fileName = 'data.json', ?string $baseDirectory = null): Collection
     {
         return collect($this->readFromJson($relativePath, $fileName, $baseDirectory));
     }
